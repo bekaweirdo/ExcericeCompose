@@ -15,7 +15,7 @@ fun SetupNavGraph(
     val viewModel: ConversionVm = viewModel()
     NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
-            HomeScreen(navController, viewModel)
+            HomeScreen(navController)
         }
         composable(Screen.Dashboard.route, arguments = listOf(navArgument(DASHBOARD_ARGUMENT_KEY) {
             type = NavType.IntType
