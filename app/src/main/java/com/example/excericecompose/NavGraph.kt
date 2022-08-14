@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.excericecompose.vm.ConversionVm
 
 @Composable
 fun SetupNavGraph(
@@ -15,7 +16,7 @@ fun SetupNavGraph(
     val viewModel: ConversionVm = viewModel()
     NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(viewModel,navController)
         }
         composable(Screen.Dashboard.route, arguments = listOf(navArgument(DASHBOARD_ARGUMENT_KEY) {
             type = NavType.IntType

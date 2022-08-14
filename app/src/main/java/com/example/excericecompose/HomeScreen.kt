@@ -2,34 +2,30 @@ package com.example.excericecompose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.excericecompose.model.users
+import com.example.excericecompose.vm.ConversionVm
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    Column() {
+fun HomeScreen(viewModel: ConversionVm,navController: NavController) {
+    val cards by viewModel.cards.collectAsState()
+    val expandedCardsId by viewModel.expandedCardIdsList.collectAsState()
+    Column {
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
@@ -69,10 +65,15 @@ fun HomeScreen(navController: NavController) {
         }
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(users) {
-                UserCard(name = it.name, imageUrl = it.imageUrl)
+            itemsIndexed(cards) { _, card ->
+                ExpandableCard(
+                    card = card,
+                    onCardArrowClick = { viewModel.onCardArrowClicked(card.id) },
+                    expanded = expandedCardsId.contains(card.id)
+                )
             }
         }
     }
@@ -81,5 +82,5 @@ fun HomeScreen(navController: NavController) {
 @Preview()
 @Composable
 fun DefaultPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen(viewModel = viewModel(), navController = rememberNavController())
 }
