@@ -1,40 +1,39 @@
 package com.example.excericecompose
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.bumptech.glide.request.RequestOptions
 import com.example.excericecompose.model.User
 import com.skydoves.landscapist.glide.GlideImage
+import jp.wasabeef.transformers.glide.BlurTransformation
 
 @Composable
 fun ExpandableCard(
@@ -111,7 +110,7 @@ fun CardArrow(
         onClick = onClick,
         content = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_expand_less_24),
+                painter = painterResource(id = R.drawable.ic_expand_more_24),
                 contentDescription = "Expendable Arrow",
                 modifier = Modifier.rotate(degrees)
             )
@@ -124,24 +123,6 @@ fun ExpandableContent(
     card: User,
     visible: Boolean = true
 ) {
-    var screenWidthPx: Int
-    var screenWidthDp: Int
-    var cardWidthPx: Int
-    var cardWidthDp: Int
-    var cardHeightPx: Int
-    val cardHeightDp = 150
-    var cardMarginPx: Int
-    val cardMarginDp = 15
-
-    with(LocalDensity.current) {
-        screenWidthDp = LocalConfiguration.current.screenWidthDp
-        screenWidthPx = screenWidthDp.dp.toPx().toInt()
-        cardWidthPx = screenWidthPx / 2
-        cardWidthDp = screenWidthDp / 2
-        cardHeightPx = cardHeightDp.dp.toPx().toInt()
-        cardMarginPx = cardMarginDp.dp.toPx().toInt()
-    }
-
     val enterTransition = remember {
         expandVertically(
             expandFrom = Alignment.Top,
@@ -165,129 +146,39 @@ fun ExpandableContent(
         enter = enterTransition,
         exit = exitTransition
     ) {
-        val scrollState = rememberScrollState()
-
-        val bg = Bitmap.createScaledBitmap(
-            BitmapFactory.decodeResource(
-                LocalContext.current.resources,
-                R.drawable.ic_launcher_background
-            ), screenWidthPx, screenWidthPx, true
-        )
-        val bgBlurred = Bitmap.createScaledBitmap(
-            BitmapFactory.decodeResource(
-                LocalContext.current.resources,
-                R.drawable.ic_launcher_background
-            ), screenWidthPx, screenWidthPx, true
-        )
 
         Box(
             modifier = Modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
         ) {
-//            GlideImage(
-//                modifier = Modifier
-//                    .wrapContentWidth()
-//                    .wrapContentHeight(),
-//                imageModel = card.imageUrl,
-//                contentScale = ContentScale.FillWidth,
-//                placeHolder = ImageBitmap.imageResource(id = R.drawable.image_placeholder),
-//                error = ImageBitmap.imageResource(id = R.drawable.image_not_found)
-//            )
-            Image(
-                bitmap = bgBlurred.asImageBitmap(),
-                contentDescription = "",
-                modifier = Modifier.fillMaxWidth()
+            GlideImage(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                requestOptions = {
+                    RequestOptions().transform(
+                        BlurTransformation(context = LocalContext.current, radius = 10, sampling = 1)
+                    )
+                },
+                imageModel = card.imageUrl,
+                contentScale = ContentScale.FillWidth,
+                placeHolder = ImageBitmap.imageResource(id = R.drawable.image_placeholder),
+                error = ImageBitmap.imageResource(id = R.drawable.image_not_found)
             )
 
-            Canvas(
+            Text(
                 modifier = Modifier
-                    .horizontalScroll(scrollState)
-                    .width((10 * (cardWidthDp + cardMarginDp) + cardMarginDp).dp)
-                    .height(screenWidthDp.dp)
-            ) {
-                for (i in 0..10) {
-                    val path = Path()
+                    .align(Alignment.TopCenter)
+                    .padding(top = 10.dp),
+                text = card.name,
+                color = Color.Magenta,
+                fontSize = 24.sp,
+                fontFamily = FontFamily(
+                    Font(R.font.hamer_medium)
+                )
+            )
 
-                    path.addRoundRect(
-                        RoundRect(
-                            Rect(
-                                Offset(
-                                    (i * (cardWidthPx + cardMarginPx) + cardMarginPx).toFloat(),
-                                    0f
-                                ),
-                                Size(cardWidthPx.toFloat(), cardHeightPx.toFloat())
-                            ),
-                            CornerRadius(10.dp.toPx())
-                        )
-                    )
-
-                    clipPath(path, clipOp = ClipOp.Intersect) {
-                        drawImage(
-                            bg.asImageBitmap(),
-                            Offset(10f, 0f)
-                        )
-                    }
-                }
-            }
-
-//            Column(
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .fillMaxWidth()
-//            ) {
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//                Text(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    text = card.name,
-//                    style = TextStyle(
-//                        color = Color.White
-//                    )
-//                )
-//
-//            }
         }
     }
 }
