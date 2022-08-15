@@ -8,6 +8,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -30,6 +35,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.bumptech.glide.request.RequestOptions
 import com.example.excericecompose.model.User
 import com.skydoves.landscapist.glide.GlideImage
@@ -167,17 +174,65 @@ fun ExpandableContent(
                 error = ImageBitmap.imageResource(id = R.drawable.image_not_found)
             )
 
-            Text(
+            ConstraintLayout(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 10.dp),
-                text = card.name,
-                color = Color.Magenta,
-                fontSize = 24.sp,
-                fontFamily = FontFamily(
-                    Font(R.font.hamer_medium)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                val (title,release_date,songs_title,songs) = createRefs()
+                Text(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .constrainAs(title) {
+                            centerHorizontallyTo(parent)
+                        },
+                    text = card.name,
+                    color = Color.Magenta,
+                    fontSize = 24.sp,
+                    fontFamily = FontFamily(
+                        Font(R.font.hamer_medium)
+                    )
                 )
-            )
+
+                Text(
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .constrainAs(songs_title) {
+                            top.linkTo(title.bottom)
+                        },
+                    text = "List of songs: ",
+                    color = Color.Magenta,
+                    fontFamily = FontFamily(
+                        Font(R.font.hamer_medium)
+                    )
+                )
+
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .wrapContentHeight(unbounded = true)
+                        .wrapContentWidth(unbounded = true)
+                        .constrainAs(songs){
+                            top.linkTo(songs_title.bottom)
+                            start.linkTo(songs_title.start)
+                        },
+                    columns = GridCells.Fixed(2)
+                ){
+                    itemsIndexed(card.songList){ _, song ->
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .constrainAs(songs_title) {
+                                    top.linkTo(title.bottom)
+                                },
+                            text = "$song ",
+                            color = Color.Magenta,
+                            fontFamily = FontFamily(
+                                Font(R.font.hamer_medium)
+                            )
+                        )
+                    }
+                }
+            }
 
         }
     }
