@@ -1,4 +1,4 @@
-package com.example.excericecompose
+package com.example.excericecompose.coldplay
 
 const val DASHBOARD_ARGUMENT_KEY = "degree"
 

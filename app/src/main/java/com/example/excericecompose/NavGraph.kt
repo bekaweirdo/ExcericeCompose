@@ -7,7 +7,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.excericecompose.vm.ConversionVm
+import com.example.excericecompose.coldplay.DASHBOARD_ARGUMENT_KEY
+import com.example.excericecompose.coldplay.Screen
+import com.example.excericecompose.coldplay.vm.ConversionVm
 
 @Composable
 fun SetupNavGraph(

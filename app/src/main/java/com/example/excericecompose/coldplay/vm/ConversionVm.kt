@@ -1,9 +1,9 @@
-package com.example.excericecompose.vm
+package com.example.excericecompose.coldplay.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.excericecompose.model.User
-import com.example.excericecompose.model.users
+import com.example.excericecompose.coldplay.model.User
+import com.example.excericecompose.coldplay.model.users
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

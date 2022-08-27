@@ -1,4 +1,4 @@
-package com.example.excericecompose.model
+package com.example.excericecompose.coldplay.model
 
 data class User(
     val id: Int,

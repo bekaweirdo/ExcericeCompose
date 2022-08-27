@@ -18,8 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.excericecompose.model.users
-import com.example.excericecompose.vm.ConversionVm
+import com.example.excericecompose.coldplay.vm.ConversionVm
 
 @Composable
 fun HomeScreen(viewModel: ConversionVm,navController: NavController) {

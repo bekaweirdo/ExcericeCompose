@@ -19,7 +19,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.excericecompose.vm.ConversionVm
+import com.example.excericecompose.coldplay.vm.ConversionVm
 
 @Composable
 fun DashboardScreen(navController: NavController, viewModel: ConversionVm, value: Int) {
