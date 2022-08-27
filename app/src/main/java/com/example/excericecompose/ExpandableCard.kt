@@ -207,23 +207,17 @@ fun ExpandableContent(
                     )
                 )
 
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .wrapContentHeight(unbounded = true)
-                        .wrapContentWidth(unbounded = true)
-                        .constrainAs(songs){
-                            top.linkTo(songs_title.bottom)
-                            start.linkTo(songs_title.start)
-                        },
-                    columns = GridCells.Fixed(2)
-                ){
-                    itemsIndexed(card.songList){ _, song ->
+                Column(
+                    Modifier.padding(
+                        top = 10.dp
+                    ).constrainAs(songs) {
+                        top.linkTo(songs_title.bottom)
+                    }
+                ) {
+                    card.songList.forEach { song ->
                         Text(
                             modifier = Modifier
-                                .padding(start = 10.dp)
-                                .constrainAs(songs_title) {
-                                    top.linkTo(title.bottom)
-                                },
+                                .padding(start = 10.dp),
                             text = "$song ",
                             color = Color.Magenta,
                             fontFamily = FontFamily(
